@@ -1,21 +1,20 @@
 # RBaikalNLP
+
 * R package for baikalNLP
 
-
-
 ## Install
----
+
 library(devtools)  
 devtools::install_github("baikalai/RBaikalNLP")  
 
 
 ## Load
----
+
 library(RProtoBuf)  
 library(baikalNLP)  
 
 ## Functions
----
+
 - tagger: baikalNLP 서버를 호출하여 문장(들)을 분석
 - postag: 분석한 문장의 음절, 태그 배열 보기
 - morphs: 분석한 문장의 음절 배열 보기
@@ -25,7 +24,7 @@ library(baikalNLP)
 - print_as_json: 분석 결과를 JSON 으로 표시
 
 ## Example
----
+
 ```
 > m <- tagger("문장을 입력합니다.\n여러 문장은 이렿게 넣습니다.")
 
