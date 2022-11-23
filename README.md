@@ -12,7 +12,7 @@ devtools::install_github("baikalai/RBaikalNLP")
 ## Load
 
 library(RProtoBuf)  
-library(baikalNLP)  
+library(baikalnlp)  
 
 ## Functions
 
