@@ -76,3 +76,7 @@ $verbs
 $verbs
 [1] "넣"
 ```
+
+---
+
+by https://baikal.ai/
