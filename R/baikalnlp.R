@@ -20,8 +20,8 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #" @return message - Message for response of AnalyzeSyntax
 #" @export
 tagger <- function(str, host = "nlp.baikal.ai:5656") {
-  spec <- "protos/language_service.proto"
-  #systemfile
+  proto <- "protos/language_service.proto"
+  spec <- system.file(proto, package = "rpc")
   impl <- read_services(spec)
   client <- grpc_client(impl, host)
   document <- P("baikal.language.Document", file = spec)
@@ -29,7 +29,7 @@ tagger <- function(str, host = "nlp.baikal.ai:5656") {
   doc$content <- str
   doc$language <- "ko_KR"
   example <- client$AnalyzeSyntax$build(
-    document = doc, encoding_type=1, auto_split_sentence = 0)
+    document = doc, encoding_type = 1, auto_split_sentence = 0)
   client$AnalyzeSyntax$call(example)
 }
 
