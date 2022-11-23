@@ -11,14 +11,16 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
                 "VA", "VCN", "VCP", "VV", "VX",
                 "XPN", "XR", "XSA", "XSN", "XSV", "_SP_", "PAD")
 
-#" Call baikalNLP server to read postag result message for the sentences
-#"
-#" baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
-#"
-#" @param str - string, subject sentences splitted by newline(\n)
-#" @param host - baikal nlp grpc server address
-#" @return message - Message for response of AnalyzeSyntax
-#" @export
+#' Call baikalNLP server to read postag result message for the sentences
+#'
+#' baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
+#'
+#' @param str string, subject sentences splitted by newline(\n)
+#' @param host baikal nlp grpc server address
+#' @return message Message for response of AnalyzeSyntax
+#' @importFrom grpc read_services grpc_client
+#' @importFrom RProtoBuf P
+#' @export
 tagger <- function(str, host = "nlp.baikal.ai:5656") {
   spec <- system.file("protos/language_service.proto", package = "baikalNLP")
   impl <- read_services(spec)
@@ -32,24 +34,24 @@ tagger <- function(str, host = "nlp.baikal.ai:5656") {
   client$AnalyzeSyntax$call(example)
 }
 
-#" Return JSON string for response message
-#"
-#" 결과를 JSON 문자열로 출력.
-#"
-#" @param message - baikalNLP response message
-#" @return string - JSON string
-#" @export
+#' Return JSON string for response message
+#'
+#' 결과를 JSON 문자열로 출력.
+#'
+#' @param message baikalNLP response message
+#' @return string JSON string
+#' @export
 as_json_string <- function(message) {
   toJSON(message)
 }
 
-#" Print JSON string for response message
-#"
-#" 결과를 JSON 문자열로 화면에 표시.
-#"
-#" @param message - baikalNLP response message
-#" @return print JSON string
-#" @export
+#' Print JSON string for response message
+#'
+#' 결과를 JSON 문자열로 화면에 표시.
+#'
+#' @param message baikalNLP response message
+#' @return print JSON string
+#' @export
 print_as_json <- function(message) {
   cat(as_json_string(message))
 }
@@ -59,12 +61,12 @@ tagging <- function(m) {
   ms <- m$sentences
   for (s in ms) {
     tx <- as.list(s)
-    #" textspan <- as.list(tx$text)
+    #' textspan <- as.list(tx$text)
     sen <- c()
     tokens <- as.list(tx$tokens)
     for (t in tokens) {
       tk <- as.list(t)
-      #" textspan <- as.list(tk$text)
+      #' textspan <- as.list(tk$text)
       for (m in tk$morphemes) {
         mol <- as.list(m)
         ts <- as.list(mol$text)
@@ -78,13 +80,13 @@ tagging <- function(m) {
   tags
 }
 
-#" Returns array of word, postag pairs
-#"
-#" 결과를 (음절, 형태소 태그) 의 배열로 출력.
-#"
-#" @param message - baikalNLP response message
-#" @return array of list - result array of postags
-#" @export
+#' Returns array of word, postag pairs
+#'
+#' 결과를 (음절, 형태소 태그) 의 배열로 출력.
+#'
+#' @param message baikalNLP response message
+#' @return array of list result array of postags
+#' @export
 postag <- function(m) {
   tags <- tagging(m)
   pos <- c()
@@ -96,13 +98,13 @@ postag <- function(m) {
   pos
 }
 
-#" Returns array of Morphemes
-#"
-#" 형태소 분석 결과의 음절만 배열로 출력.
-#"
-#" @param message - baikalNLP response message
-#" @return array of list - result array of morphemes
-#" @export
+#' Returns array of Morphemes
+#'
+#' 형태소 분석 결과의 음절만 배열로 출력.
+#'
+#' @param message baikalNLP response message
+#' @return array of list result array of morphemes
+#' @export
 morphs <- function(m) {
   tags <- tagging(m)
   mo <- c()
@@ -114,13 +116,13 @@ morphs <- function(m) {
   mo
 }
 
-#" Returns array of Nouns
-#"
-#" 형태소 분석 결과의 명사 배열을 출력.
-#"
-#" @param message - baikalNLP response message
-#" @return array of list - only nouns
-#" @export
+#' Returns array of Nouns
+#'
+#' 형태소 분석 결과의 명사 배열을 출력.
+#'
+#' @param message baikalNLP response message
+#' @return array of list only nouns
+#' @export
 nouns <- function(m) {
   nouns1 <- function(t) {
     ns <- c()
@@ -146,13 +148,13 @@ nouns <- function(m) {
   nns
 }
 
-#" Returns array of Verbs
-#"
-#" 형태소 분석 결과의 동사 배열 출력.
-#"
-#" @param message - baikalNLP response message
-#" @return array of list - only verbs
-#" @export
+#' Returns array of Verbs
+#'
+#' 형태소 분석 결과의 동사 배열 출력.
+#'
+#' @param message baikalNLP response message
+#' @return array of list only verbs
+#' @export
 verbs <- function(m) {
   verbs1 <- function(t) {
     vs <- c()

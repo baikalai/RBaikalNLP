@@ -1,4 +1,4 @@
-Package: baikalNLP
+Package: baikalnlp
 Title: R interface for BaikalNLP
 Version: 0.1.0
 Authors@R: 
