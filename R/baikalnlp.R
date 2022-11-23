@@ -21,6 +21,7 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #" @export
 tagger <- function(str, host = "nlp.baikal.ai:5656") {
   spec <- "protos/language_service.proto"
+  #systemfile
   impl <- read_services(spec)
   client <- grpc_client(impl, host)
   document <- P("baikal.language.Document", file = spec)
