@@ -27,8 +27,9 @@ library(baikalnlp)
 ## Example
 
 ```
+> library(RProtoBuf)
+> library(baikalnlp)
 > m <- tagger("문장을 입력합니다.\n여러 문장은 이렿게 넣습니다.")
-
 > print_as_json(m)
 ...
 
