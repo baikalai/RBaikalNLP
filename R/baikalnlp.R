@@ -1,7 +1,4 @@
-#" baikalnlp grpc client
-#" Tagged: as_json, pos, morphs, nouns, verbs
-#" tagger1(host, port): tag, tags, version, nlp_version
-#" custom_dict, domain, client...
+# baikalNLP grpc client
 
 library(grpc)
 library(RProtoBuf)
