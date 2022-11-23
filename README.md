@@ -1,6 +1,7 @@
 # RBaikalNLP
 
 * R package for baikalNLP
+* About baikalNLP: https://license.baikal.ai/
 
 ## Install
 
