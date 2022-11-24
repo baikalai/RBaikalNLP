@@ -15,3 +15,7 @@ returns JSON string
 \description{
 결과를 JSON 문자열로 변환.
 }
+\examples{
+m <- tagger("결과를 문자열로 바꾼다.")
+json <- as_json_string(m)
+}

@@ -15,3 +15,9 @@ returns array of list for nouns
 \description{
 형태소 분석 결과의 명사 배열 반환.
 }
+\examples{
+> m <- tagger("결과를 문자열로 바꾼다.")
+> nouns(m)
+$nouns
+[1] "결과"   "문자열"
+}

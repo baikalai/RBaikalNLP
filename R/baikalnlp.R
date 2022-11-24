@@ -18,6 +18,8 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @param str - subject sentences splitted by newline(\n)
 #' @param host - baikalNLP grpc server address
 #' @return returns response message of baikalNLP.AnalyzeSyntax
+#' @examples
+#' message <- tagger("결과를 문자열로 바꾼다.")
 #' @importFrom grpc read_services grpc_client
 #' @importFrom RProtoBuf P
 #' @export
@@ -40,6 +42,9 @@ tagger <- function(str, host = "nlp.baikal.ai:5656") {
 #'
 #' @param message baikalNLP response message
 #' @return returns JSON string
+#' @examples
+#' m <- tagger("결과를 문자열로 바꾼다.")
+#' json <- as_json_string(m)
 #' @export
 as_json_string <- function(message) {
   toJSON(message)
@@ -51,6 +56,9 @@ as_json_string <- function(message) {
 #'
 #' @param message baikalNLP response message
 #' @return prints JSON string
+#' @examples
+#' m <- tagger("결과를 문자열로 바꾼다.")
+#' print_as_json(m)
 #' @export
 print_as_json <- function(message) {
   cat(as_json_string(message))
@@ -84,6 +92,18 @@ print_as_json <- function(message) {
 #'
 #' @param message baikalNLP response message
 #' @return returns array of list for (morpheme, postag)
+#' @examples
+#' > m <- tagger("결과를 문자열로 바꾼다.")
+#' > postag(m)
+#' $pos
+#'      [,1]    [,2]
+#' [1,] "결과"    "NNG"
+#' [2,] "를"     "JKO"
+#' [3,] "문자열"   "NNG"
+#' [4,] "로"     "JKB"
+#' [5,] "바꾸"    "VV"
+#' [6,] "ㄴ다"    "EF"
+#' [7,] "."      "SF"
 #' @export
 postag <- function(m) {
   tags <- .tagging(m)
@@ -102,6 +122,11 @@ postag <- function(m) {
 #'
 #' @param message baikalNLP response message
 #' @return returns array of list for morphemes
+#' @examples
+#' > m <- tagger("결과를 문자열로 바꾼다.")
+#' > morphs(m)
+#' $morph
+#' [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 #' @export
 morphs <- function(m) {
   tags <- .tagging(m)
@@ -120,6 +145,11 @@ morphs <- function(m) {
 #'
 #' @param message baikalNLP response message
 #' @return returns array of list for nouns
+#' @examples
+#' > m <- tagger("결과를 문자열로 바꾼다.")
+#' > nouns(m)
+#' $nouns
+#' [1] "결과"   "문자열"
 #' @export
 nouns <- function(m) {
   nouns1 <- function(t) {
@@ -152,6 +182,11 @@ nouns <- function(m) {
 #'
 #' @param message baikalNLP response message
 #' @return returns array of list for verbs
+#' @examples
+#' > m <- tagger("결과를 문자열로 바꾼다.")
+#' > verbs(m)
+#' $verbs
+#' [1] "바꾸"
 #' @export
 verbs <- function(m) {
   verbs1 <- function(t) {

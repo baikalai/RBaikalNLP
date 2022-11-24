@@ -15,3 +15,16 @@ returns array of list for (morpheme, postag)
 \description{
 결과에서 (음절, 형태소 태그)의 배열을 반환.
 }
+\examples{
+> m <- tagger("결과를 문자열로 바꾼다.")
+> postag(m)
+$pos
+     [,1]    [,2]
+[1,] "결과"    "NNG"
+[2,] "를"     "JKO"
+[3,] "문자열"   "NNG"
+[4,] "로"     "JKB"
+[5,] "바꾸"    "VV"
+[6,] "ㄴ다"    "EF"
+[7,] "."      "SF"
+}

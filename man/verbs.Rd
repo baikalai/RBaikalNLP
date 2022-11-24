@@ -15,3 +15,9 @@ returns array of list for verbs
 \description{
 형태소 분석 결과의 동사 배열 반환.
 }
+\examples{
+> m <- tagger("결과를 문자열로 바꾼다.")
+> verbs(m)
+$verbs
+[1] "바꾸"
+}

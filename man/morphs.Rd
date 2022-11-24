@@ -15,3 +15,9 @@ returns array of list for morphemes
 \description{
 형태소 분석 결과의 음절 배열 반환.
 }
+\examples{
+> m <- tagger("결과를 문자열로 바꾼다.")
+> morphs(m)
+$morph
+[1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
+}
