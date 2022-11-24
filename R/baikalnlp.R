@@ -86,34 +86,48 @@ print_as_json <- function(message) {
   tags
 }
 
-#' Return array of (word, postag) pairs
+#' Return array of (morpheme, postag) pairs
 #'
 #' 결과에서 (음절, 형태소 태그)의 배열을 반환.
 #'
 #' @param message baikalNLP response message
-#' @return returns array of list for (morpheme, postag)
+#' @param matrix if TRUE, result output to matrix not list (default = FALSE)
+#' @return returns array of lists for (morpheme, tag)
 #' @examples
 #' > m <- tagger("결과를 문자열로 바꾼다.")
-#' > postag(m)
-#' $pos
-#'      [,1]    [,2]
-#' [1,] "결과"    "NNG"
+#' > postag(m, matrix = TRUE)
+#' [[1]]
+#'      [,1]     [,2]
+#' [1,] "결과"   "NNG"
 #' [2,] "를"     "JKO"
-#' [3,] "문자열"   "NNG"
+#' [3,] "문자열" "NNG"
 #' [4,] "로"     "JKB"
-#' [5,] "바꾸"    "VV"
-#' [6,] "ㄴ다"    "EF"
+#' [5,] "바꾸"   "VV"
+#' [6,] "ㄴ다"   "EF"
 #' [7,] "."      "SF"
 #' @export
-postag <- function(m) {
-  tags <- .tagging(m)
-  pos <- c()
+postag <- function(message, matrix = FALSE) {
+  tags <- .tagging(message)
+  pos_list <- c(list(), seq_along(tags))
+  pos_mat <- pos_list
+  tag_i <- 0
   for (t in tags) {
-    p <- list()
-    p$pos <- matrix(t, ncol = 2, byrow = TRUE)
-    pos <- c(pos, p)
+    tag_i <- tag_i + 1
+    pos_mat[[tag_i]] <- matrix(t, ncol = 2, byrow = TRUE)
+    tag_a <- 1 : (length(t) / 2)
+    tag_list <- c(list(), tag_a)
+    a_i <- 0
+    for (i in tag_a) {
+      a_i <- a_i + 1
+      tag_list[[a_i]] <- list(morpheme = t[i * 2 - 1], tag = t[i * 2])
+    }
+    pos_list[[tag_i]] <- tag_list
   }
-  pos
+  if (matrix) {
+    pos_mat
+  } else {
+    pos_list
+  }
 }
 
 #' Return array of Morphemes
@@ -125,18 +139,32 @@ postag <- function(m) {
 #' @examples
 #' > m <- tagger("결과를 문자열로 바꾼다.")
 #' > morphs(m)
-#' $morph
+#' [[1]]
 #' [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 #' @export
-morphs <- function(m) {
-  tags <- .tagging(m)
-  mo <- c()
+morphs <- function(message) {
+  tags <- .tagging(message)
+  morp <- c(list(), seq_along(tags))
+  tag_i <- 0
   for (t in tags) {
-    m <- list()
-    m$morph <- t[seq(1, length(t), by = 2)]
-    mo <- c(mo, m)
+    tag_i <- tag_i + 1
+    morp[[tag_i]] <- t[seq(1, length(t), by = 2)]
   }
-  mo
+  morp
+}
+
+.findtag <- function(t, c) {
+  out <- c()
+  num <- length(t) / 2
+  for (i in 1:num) {
+    if (!is.na(match(t[i * 2], c))) {
+      out <- c(out, t[i * 2 - 1])
+    }
+  }
+  if (length(out) == 0) {
+    out <- c("")
+  }
+  out
 }
 
 #' Return array of Nouns
@@ -148,30 +176,16 @@ morphs <- function(m) {
 #' @examples
 #' > m <- tagger("결과를 문자열로 바꾼다.")
 #' > nouns(m)
-#' $nouns
+#' [[1]]
 #' [1] "결과"   "문자열"
 #' @export
-nouns <- function(m) {
-  nouns1 <- function(t) {
-    ns <- c()
-    num <- length(t) / 2
-    for (i in 1:num) {
-      if (!is.na(match(t[i * 2], c("NNP", "NNG", "NP", "NNB")))) {
-        ns <- c(ns, t[i * 2 - 1])
-      }
-    }
-    if (length(ns) == 0) {
-      ns <- c("")
-    }
-    ns
-  }
-
-  tags <- .tagging(m)
-  nns <- c()
+nouns <- function(message) {
+  tags <- .tagging(message)
+  nns <- c(list(), seq_along(tags))
+  tag_i <- 0
   for (t in tags) {
-    n <- list()
-    n$nouns <- nouns1(t)
-    nns <- c(nns, n)
+    tag_i <- tag_i + 1
+    nns[[tag_i]] <- .findtag(t, c("NNP", "NNG", "NP", "NNB"))
   }
   nns
 }
@@ -185,30 +199,16 @@ nouns <- function(m) {
 #' @examples
 #' > m <- tagger("결과를 문자열로 바꾼다.")
 #' > verbs(m)
-#' $verbs
+#' [[1]]
 #' [1] "바꾸"
 #' @export
-verbs <- function(m) {
-  verbs1 <- function(t) {
-    vs <- c()
-    num <- length(t) / 2
-    for (i in 1:num) {
-      if (t[i * 2] == "VV") {
-        vs <- c(vs, t[i * 2 - 1])
-      }
-    }
-    if (length(vs) == 0) {
-      vs <- c("")
-    }
-    vs
-  }
-
-  tags <- .tagging(m)
-  vbs <- c()
+verbs <- function(message) {
+  tags <- .tagging(message)
+  vbs <- c(list(), seq_along(tags))
+  tag_i <- 0
   for (t in tags) {
-    v <- list()
-    v$verbs <- verbs1(t)
-    vbs <- c(vbs, v)
+    tag_i <- tag_i + 1
+    vbs[[tag_i]] <- .findtag(t, c("VV"))
   }
   vbs
 }

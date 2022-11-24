@@ -10,7 +10,7 @@ devtools::install_github("baikalai/RBaikalNLP")
 
 ➡️ [INSTALL](https://github.com/baikalai/RBaikalNLP/blob/main/INSTALL.md) 파일 내용 참고 
 
-## Load
+## Usage
 
 library(RProtoBuf)  
 library(baikalnlp)  
@@ -25,17 +25,18 @@ library(baikalnlp)
 - as_json_string: 분석 결과를 JSON 문자열 반환
 - print_as_json: 분석 결과를 JSON 으로 표시
 
-## Example
+## Examples
 
+- 로드/호출
 ```
 > library(RProtoBuf)
 > library(baikalnlp)
-> m <- tagger("문장을 입력합니다.\n여러 문장은 이렿게 넣습니다.")
-> print_as_json(m)
-...
-
-> postag(m)
-$pos
+> m <- tagger("문장을 입력합니다.\n여럿은 이렿게 넣습니다.")
+```
+- 형태소 분석을 매트릭스로 출력
+```
+> postag(m, TRUE)
+[[1]]
      [,1]     [,2]
 [1,] "문장"   "NNG"
 [2,] "을"     "JKO"
@@ -44,41 +45,50 @@ $pos
 [5,] "ㅂ니다" "EF"
 [6,] "."      "SF"
 
-$pos
+[[2]]
       [,1]     [,2]
- [1,] "여러"   "MMN"
- [2,] "문장"   "NNG"
- [3,] "은"     "JX"
- [4,] "이"     "VCP"
- [5,] "렿거"   "EC"
- [6,] "이"     "JKS"
- [7,] "넣"     "VV"
- [8,] "습니다" "EF"
- [9,] "."      "SF"
+[1,] "여럿"   "NNG"
+[2,] "은"     "JX"
+[3,] "이"     "VCP"
+[4,] "렿거"   "EC"
+[5,] "이"     "JKS"
+[6,] "넣"     "VV"
+[7,] "습니다" "EF"
+[8,] "."      "SF"
+```
+- 1번째 문장의 5번째 형태소 출력
+```
+> postag(m)[[1]][[5]]
+$morpheme
+[1] "ㅂ니다"
 
+$tag
+[1] "EF"
+```
+- 어절, 명사, 동사 출력(해당 없는 경우 빈 문자열 배열 반환)
+```
 > morphs(m)
-$morph
+[[1]]
 [1] "문장"   "을"     "입력"   "하"     "ㅂ니다" "."
 
-$morph
-[1] "여러"   "문장"   "은"     "이"     "렿거"   "이"     "넣"     "습니다"
-[9] "."
+[[2]]
+[1] "여럿"   "은"     "이"     "렿거"   "이"     "넣"     "습니다" "."
 
 > nouns(m)
-$nouns
+[[1]]
 [1] "문장" "입력"
 
-$nouns
-[1] "문장"
+[[2]]
+[1] "여럿"
 
 > verbs(m)
-$verbs
+[[1]]
 [1] ""
 
-$verbs
+[[2]]
 [1] "넣"
 ```
 
 ---
 
-by https://baikal.ai/
+by [baikal.ai](https://baikal.ai)

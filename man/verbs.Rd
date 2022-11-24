@@ -4,7 +4,7 @@
 \alias{verbs}
 \title{Return array of Verbs}
 \usage{
-verbs(m)
+verbs(message)
 }
 \arguments{
 \item{message}{baikalNLP response message}
@@ -18,6 +18,6 @@ returns array of list for verbs
 \examples{
 > m <- tagger("결과를 문자열로 바꾼다.")
 > verbs(m)
-$verbs
+[[1]]
 [1] "바꾸"
 }

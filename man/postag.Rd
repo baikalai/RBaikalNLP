@@ -2,29 +2,31 @@
 % Please edit documentation in R/baikalnlp.R
 \name{postag}
 \alias{postag}
-\title{Return array of (word, postag) pairs}
+\title{Return array of (morpheme, postag) pairs}
 \usage{
-postag(m)
+postag(message, matrix = FALSE)
 }
 \arguments{
 \item{message}{baikalNLP response message}
+
+\item{matrix}{if TRUE, result output to matrix not list (default = FALSE)}
 }
 \value{
-returns array of list for (morpheme, postag)
+returns array of lists for (morpheme, tag)
 }
 \description{
 결과에서 (음절, 형태소 태그)의 배열을 반환.
 }
 \examples{
 > m <- tagger("결과를 문자열로 바꾼다.")
-> postag(m)
-$pos
-     [,1]    [,2]
-[1,] "결과"    "NNG"
+> postag(m, matrix = TRUE)
+[[1]]
+     [,1]     [,2]
+[1,] "결과"   "NNG"
 [2,] "를"     "JKO"
-[3,] "문자열"   "NNG"
+[3,] "문자열" "NNG"
 [4,] "로"     "JKB"
-[5,] "바꾸"    "VV"
-[6,] "ㄴ다"    "EF"
+[5,] "바꾸"   "VV"
+[6,] "ㄴ다"   "EF"
 [7,] "."      "SF"
 }

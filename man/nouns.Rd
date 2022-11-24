@@ -4,7 +4,7 @@
 \alias{nouns}
 \title{Return array of Nouns}
 \usage{
-nouns(m)
+nouns(message)
 }
 \arguments{
 \item{message}{baikalNLP response message}
@@ -18,6 +18,6 @@ returns array of list for nouns
 \examples{
 > m <- tagger("결과를 문자열로 바꾼다.")
 > nouns(m)
-$nouns
+[[1]]
 [1] "결과"   "문자열"
 }

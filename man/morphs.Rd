@@ -4,7 +4,7 @@
 \alias{morphs}
 \title{Return array of Morphemes}
 \usage{
-morphs(m)
+morphs(message)
 }
 \arguments{
 \item{message}{baikalNLP response message}
@@ -18,6 +18,6 @@ returns array of list for morphemes
 \examples{
 > m <- tagger("결과를 문자열로 바꾼다.")
 > morphs(m)
-$morph
+[[1]]
 [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 }
