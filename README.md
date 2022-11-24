@@ -8,6 +8,7 @@
 library(devtools)  
 devtools::install_github("baikalai/RBaikalNLP")  
 
+➡️ [INSTALL](https://github.com/baikalai/RBaikalNLP/blob/main/INSTALL) 파일 내용 참고 
 
 ## Load
 
