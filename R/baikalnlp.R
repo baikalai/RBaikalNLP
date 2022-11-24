@@ -1,4 +1,4 @@
-# baikalNLP grpc client
+# package baikalnlp: baikalNLP grpc client
 
 library(grpc)
 library(RProtoBuf)
@@ -15,14 +15,14 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #'
 #' baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
 #'
-#' @param str string, subject sentences splitted by newline(\n)
-#' @param host baikal nlp grpc server address
-#' @return message Message for response of AnalyzeSyntax
+#' @param str - subject sentences splitted by newline(\n)
+#' @param host - baikalNLP grpc server address
+#' @return returns response message of baikalNLP.AnalyzeSyntax
 #' @importFrom grpc read_services grpc_client
 #' @importFrom RProtoBuf P
 #' @export
 tagger <- function(str, host = "nlp.baikal.ai:5656") {
-  spec <- system.file("protos/language_service.proto", package = "baikalNLP")
+  spec <- system.file("protos/language_service.proto", package = "baikalnlp")
   impl <- read_services(spec)
   client <- grpc_client(impl, host)
   document <- P("baikal.language.Document", file = spec)
@@ -36,10 +36,10 @@ tagger <- function(str, host = "nlp.baikal.ai:5656") {
 
 #' Return JSON string for response message
 #'
-#' 결과를 JSON 문자열로 출력.
+#' 결과를 JSON 문자열로 변환.
 #'
 #' @param message baikalNLP response message
-#' @return string JSON string
+#' @return returns JSON string
 #' @export
 as_json_string <- function(message) {
   toJSON(message)
@@ -47,26 +47,24 @@ as_json_string <- function(message) {
 
 #' Print JSON string for response message
 #'
-#' 결과를 JSON 문자열로 화면에 표시.
+#' 결과를 JSON 문자열로 출력.
 #'
 #' @param message baikalNLP response message
-#' @return print JSON string
+#' @return prints JSON string
 #' @export
 print_as_json <- function(message) {
   cat(as_json_string(message))
 }
 
-tagging <- function(m) {
+.tagging <- function(m) {
   tags <- c()
   ms <- m$sentences
   for (s in ms) {
     tx <- as.list(s)
-    #' textspan <- as.list(tx$text)
     sen <- c()
     tokens <- as.list(tx$tokens)
     for (t in tokens) {
       tk <- as.list(t)
-      #' textspan <- as.list(tk$text)
       for (m in tk$morphemes) {
         mol <- as.list(m)
         ts <- as.list(mol$text)
@@ -80,15 +78,15 @@ tagging <- function(m) {
   tags
 }
 
-#' Returns array of word, postag pairs
+#' Return array of (word, postag) pairs
 #'
-#' 결과를 (음절, 형태소 태그) 의 배열로 출력.
+#' 결과에서 (음절, 형태소 태그)의 배열을 반환.
 #'
 #' @param message baikalNLP response message
-#' @return array of list result array of postags
+#' @return returns array of list for (morpheme, postag)
 #' @export
 postag <- function(m) {
-  tags <- tagging(m)
+  tags <- .tagging(m)
   pos <- c()
   for (t in tags) {
     p <- list()
@@ -98,15 +96,15 @@ postag <- function(m) {
   pos
 }
 
-#' Returns array of Morphemes
+#' Return array of Morphemes
 #'
-#' 형태소 분석 결과의 음절만 배열로 출력.
+#' 형태소 분석 결과의 음절 배열 반환.
 #'
 #' @param message baikalNLP response message
-#' @return array of list result array of morphemes
+#' @return returns array of list for morphemes
 #' @export
 morphs <- function(m) {
-  tags <- tagging(m)
+  tags <- .tagging(m)
   mo <- c()
   for (t in tags) {
     m <- list()
@@ -116,12 +114,12 @@ morphs <- function(m) {
   mo
 }
 
-#' Returns array of Nouns
+#' Return array of Nouns
 #'
-#' 형태소 분석 결과의 명사 배열을 출력.
+#' 형태소 분석 결과의 명사 배열 반환.
 #'
 #' @param message baikalNLP response message
-#' @return array of list only nouns
+#' @return returns array of list for nouns
 #' @export
 nouns <- function(m) {
   nouns1 <- function(t) {
@@ -138,7 +136,7 @@ nouns <- function(m) {
     ns
   }
 
-  tags <- tagging(m)
+  tags <- .tagging(m)
   nns <- c()
   for (t in tags) {
     n <- list()
@@ -148,12 +146,12 @@ nouns <- function(m) {
   nns
 }
 
-#' Returns array of Verbs
+#' Return array of Verbs
 #'
-#' 형태소 분석 결과의 동사 배열 출력.
+#' 형태소 분석 결과의 동사 배열 반환.
 #'
 #' @param message baikalNLP response message
-#' @return array of list only verbs
+#' @return returns array of list for verbs
 #' @export
 verbs <- function(m) {
   verbs1 <- function(t) {
@@ -170,7 +168,7 @@ verbs <- function(m) {
     vs
   }
 
-  tags <- tagging(m)
+  tags <- .tagging(m)
   vbs <- c()
   for (t in tags) {
     v <- list()

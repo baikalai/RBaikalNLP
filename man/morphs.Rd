@@ -2,7 +2,7 @@
 % Please edit documentation in R/baikalnlp.R
 \name{morphs}
 \alias{morphs}
-\title{Returns array of Morphemes}
+\title{Return array of Morphemes}
 \usage{
 morphs(m)
 }
@@ -10,8 +10,8 @@ morphs(m)
 \item{message}{baikalNLP response message}
 }
 \value{
-array of list result array of morphemes
+returns array of list for morphemes
 }
 \description{
-형태소 분석 결과의 음절만 배열로 출력.
+형태소 분석 결과의 음절 배열 반환.
 }

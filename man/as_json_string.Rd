@@ -10,8 +10,8 @@ as_json_string(message)
 \item{message}{baikalNLP response message}
 }
 \value{
-string JSON string
+returns JSON string
 }
 \description{
-결과를 JSON 문자열로 출력.
+결과를 JSON 문자열로 변환.
 }

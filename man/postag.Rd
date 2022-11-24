@@ -2,7 +2,7 @@
 % Please edit documentation in R/baikalnlp.R
 \name{postag}
 \alias{postag}
-\title{Returns array of word, postag pairs}
+\title{Return array of (word, postag) pairs}
 \usage{
 postag(m)
 }
@@ -10,8 +10,8 @@ postag(m)
 \item{message}{baikalNLP response message}
 }
 \value{
-array of list result array of postags
+returns array of list for (morpheme, postag)
 }
 \description{
-결과를 (음절, 형태소 태그) 의 배열로 출력.
+결과에서 (음절, 형태소 태그)의 배열을 반환.
 }

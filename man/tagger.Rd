@@ -7,12 +7,16 @@
 tagger(str, host = "nlp.baikal.ai:5656")
 }
 \arguments{
-\item{str}{string, subject sentences splitted by newline(\n)}
+\item{str}{\itemize{
+\item subject sentences splitted by newline(\n)
+}}
 
-\item{host}{baikal nlp grpc server address}
+\item{host}{\itemize{
+\item baikalNLP grpc server address
+}}
 }
 \value{
-message Message for response of AnalyzeSyntax
+returns response message of baikalNLP.AnalyzeSyntax
 }
 \description{
 baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.

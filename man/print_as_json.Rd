@@ -10,8 +10,8 @@ print_as_json(message)
 \item{message}{baikalNLP response message}
 }
 \value{
-print JSON string
+prints JSON string
 }
 \description{
-결과를 JSON 문자열로 화면에 표시.
+결과를 JSON 문자열로 출력.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/baikalnlp.R
 \name{nouns}
 \alias{nouns}
-\title{Returns array of Nouns}
+\title{Return array of Nouns}
 \usage{
 nouns(m)
 }
@@ -10,8 +10,8 @@ nouns(m)
 \item{message}{baikalNLP response message}
 }
 \value{
-array of list only nouns
+returns array of list for nouns
 }
 \description{
-형태소 분석 결과의 명사 배열을 출력.
+형태소 분석 결과의 명사 배열 반환.
 }

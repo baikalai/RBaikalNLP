@@ -2,7 +2,7 @@
 % Please edit documentation in R/baikalnlp.R
 \name{verbs}
 \alias{verbs}
-\title{Returns array of Verbs}
+\title{Return array of Verbs}
 \usage{
 verbs(m)
 }
@@ -10,8 +10,8 @@ verbs(m)
 \item{message}{baikalNLP response message}
 }
 \value{
-array of list only verbs
+returns array of list for verbs
 }
 \description{
-형태소 분석 결과의 동사 배열 출력.
+형태소 분석 결과의 동사 배열 반환.
 }
