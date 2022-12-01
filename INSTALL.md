@@ -7,7 +7,9 @@ Install Guide
     - 필요한 라이브러리를 미리 설치해야 함(설치 로그를 보고 판단할 수 있음, 예시(ubuntu): apt install libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev)
 
 3. grpc 라이브러리 설치: https://github.com/nfultz/grpc#download-and-install-grpc
-    - macos에서 컴파일 에러 경우: CMAKE_CXX_FLAGS:STRING=--std=c++11
+    - grpc 버전은 1.44.0 이하로
+    (git clone --recurse-submodules -b v1.44.0 https://github.com/grpc/grpc)
+    - macos에서 컴파일 에러 경우 CMAKE_CXX_FLAGS:STRING=--std=c++11
 
 4. R grpc 라이브러리 설치: devtools::install_github('nfultz/grpc')
 
