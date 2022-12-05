@@ -1,8 +1,8 @@
 # package baikalnlp: baikalNLP grpc client
 
+library(curl)
 library(grpc)
 library(RProtoBuf)
-library(curl)
 
 tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
                 "JC", "JKB", "JKC", "JKG", "JKO", "JKQ", "JKS", "JKV", "JX",
