@@ -4,15 +4,19 @@
 \alias{tagger}
 \title{Call baikalNLP server to read postag result message for the sentences}
 \usage{
-tagger(str, host = "nlp.baikal.ai:5656")
+tagger(str, server = "nlp.baikal.ai", port = 5656)
 }
 \arguments{
 \item{str}{\itemize{
 \item subject sentences splitted by newline(\\n)
 }}
 
-\item{host}{\itemize{
+\item{server}{\itemize{
 \item baikalNLP grpc server address
+}}
+
+\item{port}{\itemize{
+\item baikalNLP grpc server port
 }}
 }
 \value{

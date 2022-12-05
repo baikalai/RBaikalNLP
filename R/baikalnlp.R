@@ -17,12 +17,14 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
 #'
 #' @param str - subject sentences splitted by newline(\\n)
-#' @param host - baikalNLP grpc server address
+#' @param server - baikalNLP grpc server address
+#' @param port - baikalNLP grpc server port
 #' @return returns response message of baikalNLP.AnalyzeSyntax
 #' @examples
 #' message <- tagger("결과를 문자열로 바꾼다.")
 #' @importFrom grpc read_services grpc_client
 #' @importFrom RProtoBuf P
+#' @importFrom curl nslookup
 #' @export
 tagger <- function(str, server = "nlp.baikal.ai", port = 5656) {
   host <- paste(nslookup(server), ":", as.character(port), sep = "")
