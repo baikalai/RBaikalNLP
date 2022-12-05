@@ -12,7 +12,6 @@ devtools::install_github("baikalai/RBaikalNLP")
 
 ## Usage
 
-library(curl)
 library(RProtoBuf)  
 library(baikalnlp)
 
@@ -30,7 +29,6 @@ library(baikalnlp)
 
 - 로드/호출
 ```
-> library(curl)
 > library(RProtoBuf)
 > library(baikalnlp)
 > m <- tagger("문장을 입력합니다.\n여러 문장을 넣습니다.")
