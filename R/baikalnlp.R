@@ -2,6 +2,7 @@
 
 library(grpc)
 library(RProtoBuf)
+library(curl)
 
 tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
                 "JC", "JKB", "JKC", "JKG", "JKO", "JKQ", "JKS", "JKV", "JX",
@@ -15,7 +16,7 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #'
 #' baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
 #'
-#' @param str - subject sentences splitted by newline(\n)
+#' @param str - subject sentences splitted by newline(\\n)
 #' @param host - baikalNLP grpc server address
 #' @return returns response message of baikalNLP.AnalyzeSyntax
 #' @examples
@@ -23,7 +24,8 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @importFrom grpc read_services grpc_client
 #' @importFrom RProtoBuf P
 #' @export
-tagger <- function(str, host = "nlp.baikal.ai:5656") {
+tagger <- function(str, server = "nlp.baikal.ai", port = 5656) {
+  host <- paste(nslookup(server), ":", as.character(port), sep = "")
   spec <- system.file("protos/language_service.proto", package = "baikalnlp")
   impl <- read_services(spec)
   client <- grpc_client(impl, host)

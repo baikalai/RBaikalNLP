@@ -8,7 +8,7 @@ tagger(str, host = "nlp.baikal.ai:5656")
 }
 \arguments{
 \item{str}{\itemize{
-\item subject sentences splitted by newline(\n)
+\item subject sentences splitted by newline(\\n)
 }}
 
 \item{host}{\itemize{
