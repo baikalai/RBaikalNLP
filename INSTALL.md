@@ -1,7 +1,7 @@
 Install Guide
 ---
 
-1. Linux (Ubuntu 18.0 이상)
+## 1. Linux (Ubuntu 18.0 이상)
 
 - Pre-requisites:
 
@@ -13,7 +13,7 @@ sudo apt install -y clang libc++-dev
 sudo apt install -y libprotobuf-dev libprotoc-dev
 ```
 
-- grpc c++ 라이브러리를 직접 소스에서 컴파일/설치해야 합니다.
+- grpc c++ 라이브러리를 직접 소스에서 컴파일, 설치해야 함.
 ```
 # install_grpc.sh
 # - local install dir
@@ -44,7 +44,7 @@ sudo make install
 popd
 ```
 
-2. MacOS 
+## 2. MacOS 
 
 - Pre-requisites:
 ```
@@ -53,7 +53,7 @@ brew install autoconf automake libtool shtool pkg-config
 brew install protobuf openssl
 ```
 
-- grpc c++ 라이브러리 컴파일 (거의 같습니다.)
+- grpc c++ 라이브러리 컴파일, 설치
 ```
 # install local
 export GRPC_INSTALL_DIR=$HOME/.local
@@ -85,18 +85,18 @@ make install
 popd
 ```
 
-3. R에서 설치
+## 3. 공통: R에서 설치
 
 ```
 > install.packagas('devtools')
 > install.packages('RProtoBuf')
 > devtools::install_github('nfultz/grpc')
 > devtools::install_github("baikalai/RBaikalNLP")
+```
 
-
-  - 참고.1: https://github.com/grpc/grpc/blob/master/BUILDING.md#pre-requisites
+  - 참고.1: https://github.com/grpc/grpc/blob/master/BUILDING.md
 
   - 참고.2: devtools를 리눅스에 처음 설치할 경우 참고
 ```
-sudo apt install libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev)
+sudo apt install libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
 ```
