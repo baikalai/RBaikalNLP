@@ -15,7 +15,7 @@ option java_outer_classname = "CustomDictionaryServiceProto";
 
 service CustomDictionaryService {
   // 전체 목록을 다 가져오기
-  rpc GetCustomDictionaryList (google.protobuf.Empty) returns (GetCustomDictionaryListResponse) {
+  rpc GetCustomDictionaryList (Empty) returns (GetCustomDictionaryListResponse) {
     //option (google.api.http) = {
     //  get: "/baikal-nlp/api/v1/customdict"
     //  body: "*"
@@ -141,3 +141,5 @@ message DictSet {
   DictType type = 2;
   string name = 10;
 }
+
+message Empty {}

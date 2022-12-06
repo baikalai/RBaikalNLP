@@ -12,8 +12,12 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
                 "VA", "VCN", "VCP", "VV", "VX",
                 "XPN", "XR", "XSA", "XSN", "XSV", "_SP_", "PAD")
 
-.analyze_text <- function(text, proto, host) {
-  client <- grpc_client(read_services(proto), host)
+.get_client <- function(host, proto) {
+    grpc_client(read_services(proto), host)
+}
+
+.analyze_text <- function(text, host, proto) {
+  client <- .get_client(host, proto)
   document <- P("baikal.language.Document", file = proto)
   doc <- new(document)
   doc$content <- text
@@ -53,7 +57,7 @@ tagger <- function(
   response <- NULL
   dict <- NULL
   if (text != "") {
-    response <- .analyze_text(text, lang_proto, host)
+    response <- .analyze_text(text, host, lang_proto)
   }
   tagged <- list(text = text,
     result = response,
@@ -240,4 +244,73 @@ verbs <- function(tagged) {
     vbs[[tag_i]] <- .findtag(t, c("VV"))
   }
   vbs
+}
+
+.get_dic_list <- function(host, proto) {
+    cli <- .get_client(host, proto)
+    ops <- cli$GetCustomDictionaryList$build()
+    cli$GetCustomDictionaryList$call(ops)
+}
+
+#' Get List of Custom Dictionaries
+#'
+#' 모든 사용자 사전의 목록.
+#'
+#' @param tagged baikalNLP tagger result
+#' @return returns dict
+#' @examples
+#' @export
+dict_list <- function(tagged) {
+    dict <- .get_dic_list(tagged$host, tagged$dict_proto)
+    t <- tagged
+    t$dict <- dict
+    eval.parent(substitute(tagged <- t))
+    dict
+}
+
+get_dict <- function(tagged, name) {
+  t <- tagged
+  if (is.null(t$dict)) {
+    dict_list(t)
+  }
+  eval.parent(substitute(tagged <- t))
+  t$dict
+}
+
+build_dict_set <- function(tagged, domain, name, dict_set) {
+  dictset <- P("baikal.language.DictSet", file = tagged$dict_proto)
+  ds <- new(dictset)
+  ds$name <- paste(domain, "-", name, sep = "")
+  ds$type <- 1 # common.DictType.WORD_LIST
+  dsentry <- P("baikal.language.DictSet.ItemsEntry", file = tagged$dict_proto)
+  for (v in dict_set) {
+    de <- new(dsentry)
+    de$key <- v
+    de$value <- 1
+    ds$items <- c(ds$items, de)
+  }
+  ds
+}
+
+make_custom_dict <- function(tagged, domain, nps, cps, carets) {
+  dict <- P("baikal.language.CustomDictionary",
+    file = tagged$dict_proto)
+  dict$domain_name <- domain
+  dict$np_set <- build_dict_set(tagged, domain, "np-set", nps)
+  dict$cp_set <- build_dict_set(tagged, domain, "cp-set", cps)
+  dict$cp_caret_set <- build_dict_set(tagged, domain, "cp-caret-set", carets)
+  upd_req <- P("baikal.language.UpdateCustomDictionaryRequest",
+    file = tagged$dict_proto)
+  req <- new(upd_req)
+  req$domain_name <- domain
+  req$dict <- dict
+  cli <- .get_client(tagged$host, tagged$dict_proto)
+  ops <- cli$UpdateCustomDictionary$build()
+  cli$UpdateCustomDictionary$call(ops)
+}
+
+test <- function() {
+  t <- tagger(server = "10.3.8.80", local = TRUE)
+  s <- c("하나", "두울")
+  build_dict_set(t, "domain", "name", s)
 }
