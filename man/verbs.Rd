@@ -4,10 +4,10 @@
 \alias{verbs}
 \title{Return array of Verbs}
 \usage{
-verbs(message)
+verbs(tagged)
 }
 \arguments{
-\item{message}{baikalNLP response message}
+\item{tagged}{baikalNLP tagger result}
 }
 \value{
 returns array of list for verbs
@@ -16,8 +16,8 @@ returns array of list for verbs
 형태소 분석 결과의 동사 배열 반환.
 }
 \examples{
-> m <- tagger("결과를 문자열로 바꾼다.")
-> verbs(m)
+> t <- tagger("결과를 문자열로 바꾼다.")
+> verbs(t)
 [[1]]
 [1] "바꾸"
 }

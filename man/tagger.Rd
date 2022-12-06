@@ -4,27 +4,23 @@
 \alias{tagger}
 \title{Call baikalNLP server to read postag result message for the sentences}
 \usage{
-tagger(str, server = "nlp.baikal.ai", port = 5656)
+tagger(text = "", server = "nlp.baikal.ai", port = 5656, local = FALSE)
 }
 \arguments{
-\item{str}{\itemize{
-\item subject sentences splitted by newline(\\n)
-}}
+\item{text}{string - subject sentences splitted by newlines(\\n)}
 
-\item{server}{\itemize{
-\item baikalNLP grpc server address
-}}
+\item{server}{string - baikalNLP grpc server address}
 
-\item{port}{\itemize{
-\item baikalNLP grpc server port
-}}
+\item{port}{number - baikalNLP grpc server port}
+
+\item{local}{bool - use local protobuf files, if TRUE}
 }
 \value{
-returns response message of baikalNLP.AnalyzeSyntax
+returns tagged object
 }
 \description{
 baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
 }
 \examples{
-message <- tagger("결과를 문자열로 바꾼다.")
+tagged <- tagger("결과를 문자열로 바꾼다.")
 }

@@ -4,10 +4,10 @@
 \alias{postag}
 \title{Return array of (morpheme, postag) pairs}
 \usage{
-postag(message, matrix = FALSE)
+postag(tagged, matrix = FALSE)
 }
 \arguments{
-\item{message}{baikalNLP response message}
+\item{tagged}{baikalNLP tagger result}
 
 \item{matrix}{if TRUE, result output to matrix not list (default = FALSE)}
 }
@@ -18,8 +18,8 @@ returns array of lists for (morpheme, tag)
 결과에서 (음절, 형태소 태그)의 배열을 반환.
 }
 \examples{
-> m <- tagger("결과를 문자열로 바꾼다.")
-> postag(m, matrix = TRUE)
+> t <- tagger("결과를 문자열로 바꾼다.")
+> postag(t, matrix = TRUE)
 [[1]]
      [,1]     [,2]
 [1,] "결과"   "NNG"

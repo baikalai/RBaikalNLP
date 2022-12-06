@@ -12,60 +12,85 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
                 "VA", "VCN", "VCP", "VV", "VX",
                 "XPN", "XR", "XSA", "XSN", "XSV", "_SP_", "PAD")
 
-#' Call baikalNLP server to read postag result message for the sentences
-#'
-#' baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
-#'
-#' @param str - subject sentences splitted by newline(\\n)
-#' @param server - baikalNLP grpc server address
-#' @param port - baikalNLP grpc server port
-#' @return returns response message of baikalNLP.AnalyzeSyntax
-#' @examples
-#' message <- tagger("결과를 문자열로 바꾼다.")
-#' @importFrom grpc read_services grpc_client
-#' @importFrom RProtoBuf P
-#' @importFrom curl nslookup
-#' @export
-tagger <- function(str, server = "nlp.baikal.ai", port = 5656) {
-  host <- paste(nslookup(server), ":", as.character(port), sep = "")
-  spec <- system.file("protos/language_service.proto", package = "baikalnlp")
-  impl <- read_services(spec)
-  client <- grpc_client(impl, host)
-  document <- P("baikal.language.Document", file = spec)
+.analyze_text <- function(text, proto, host) {
+  client <- grpc_client(read_services(proto), host)
+  document <- P("baikal.language.Document", file = proto)
   doc <- new(document)
-  doc$content <- str
+  doc$content <- text
   doc$language <- "ko_KR"
   example <- client$AnalyzeSyntax$build(
     document = doc, encoding_type = 1, auto_split_sentence = 0)
   client$AnalyzeSyntax$call(example)
 }
 
+#' Call baikalNLP server to read postag result message for the sentences
+#'
+#' baikalNLP grpc 서버를 호출하여 입력 문장(들)의 분석 결과를 가져 온다.
+#'
+#' @param text string - subject sentences splitted by newlines(\\n)
+#' @param server string - baikalNLP grpc server address
+#' @param port number - baikalNLP grpc server port
+#' @param local bool - use local protobuf files, if TRUE
+#' @return returns tagged object
+#' @examples
+#' tagged <- tagger("결과를 문자열로 바꾼다.")
+#' @importFrom grpc read_services grpc_client
+#' @importFrom RProtoBuf P
+#' @importFrom curl nslookup
+#' @export
+tagger <- function(
+    text = "", server = "nlp.baikal.ai", port = 5656, local = FALSE) {
+  host <- paste(nslookup(server), ":", as.character(port), sep = "")
+  if (local) {
+    lang_proto <- "protos/language_service.proto"
+    dict_proto <- "protos/custom_dict.proto"
+  } else {
+    lang_proto <- system.file("protos/language_service.proto",
+      package = "baikalnlp")
+    dict_proto <- system.file("protos/custom_dict.proto",
+      package = "baikalnlp")
+  }
+  response <- NULL
+  dict <- NULL
+  if (text != "") {
+    response <- .analyze_text(text, lang_proto, host)
+  }
+  tagged <- list(text = text,
+    result = response,
+    dict = dict,
+    host = host,
+    lang_proto = lang_proto,
+    dict_proto = dict_proto)
+  class(tagged) <- "tagged"
+  tagged
+}
+
 #' Return JSON string for response message
 #'
 #' 결과를 JSON 문자열로 변환.
 #'
-#' @param message baikalNLP response message
+#' @param tagged baikalNLP tagger result
 #' @return returns JSON string
 #' @examples
-#' m <- tagger("결과를 문자열로 바꾼다.")
-#' json <- as_json_string(m)
+#' t <- tagger("결과를 문자열로 바꾼다.")
+#' json <- as_json_string(t)
 #' @export
-as_json_string <- function(message) {
-  toJSON(message)
+as_json_string <- function(tagged) {
+  toJSON(tagged$result)
 }
 
 #' Print JSON string for response message
 #'
 #' 결과를 JSON 문자열로 출력.
 #'
-#' @param message baikalNLP response message
+#' @param tagged baikalNLP tagger result
 #' @return prints JSON string
 #' @examples
-#' m <- tagger("결과를 문자열로 바꾼다.")
-#' print_as_json(m)
+#' t <- tagger("결과를 문자열로 바꾼다.")
+#' print_as_json(t)
 #' @export
-print_as_json <- function(message) {
-  cat(as_json_string(message))
+print_as_json <- function(tagged) {
+  cat(as_json_string(tagged$result))
 }
 
 .tagging <- function(m) {
@@ -94,12 +119,12 @@ print_as_json <- function(message) {
 #'
 #' 결과에서 (음절, 형태소 태그)의 배열을 반환.
 #'
-#' @param message baikalNLP response message
+#' @param tagged baikalNLP tagger result
 #' @param matrix if TRUE, result output to matrix not list (default = FALSE)
 #' @return returns array of lists for (morpheme, tag)
 #' @examples
-#' > m <- tagger("결과를 문자열로 바꾼다.")
-#' > postag(m, matrix = TRUE)
+#' > t <- tagger("결과를 문자열로 바꾼다.")
+#' > postag(t, matrix = TRUE)
 #' [[1]]
 #'      [,1]     [,2]
 #' [1,] "결과"   "NNG"
@@ -110,8 +135,8 @@ print_as_json <- function(message) {
 #' [6,] "ㄴ다"   "EF"
 #' [7,] "."      "SF"
 #' @export
-postag <- function(message, matrix = FALSE) {
-  tags <- .tagging(message)
+postag <- function(tagged, matrix = FALSE) {
+  tags <- .tagging(tagged$result)
   pos_list <- c(list(), seq_along(tags))
   pos_mat <- pos_list
   tag_i <- 0
@@ -138,16 +163,16 @@ postag <- function(message, matrix = FALSE) {
 #'
 #' 형태소 분석 결과의 음절 배열 반환.
 #'
-#' @param message baikalNLP response message
+#' @param tagged baikalNLP tagger result
 #' @return returns array of list for morphemes
 #' @examples
-#' > m <- tagger("결과를 문자열로 바꾼다.")
-#' > morphs(m)
+#' > t <- tagger("결과를 문자열로 바꾼다.")
+#' > morphs(t)
 #' [[1]]
 #' [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 #' @export
-morphs <- function(message) {
-  tags <- .tagging(message)
+morphs <- function(tagged) {
+  tags <- .tagging(tagged$result)
   morp <- c(list(), seq_along(tags))
   tag_i <- 0
   for (t in tags) {
@@ -175,16 +200,16 @@ morphs <- function(message) {
 #'
 #' 형태소 분석 결과의 명사 배열 반환.
 #'
-#' @param message baikalNLP response message
+#' @param tagged baikalNLP tagger result
 #' @return returns array of list for nouns
 #' @examples
-#' > m <- tagger("결과를 문자열로 바꾼다.")
-#' > nouns(m)
+#' > t <- tagger("결과를 문자열로 바꾼다.")
+#' > nouns(t)
 #' [[1]]
 #' [1] "결과"   "문자열"
 #' @export
-nouns <- function(message) {
-  tags <- .tagging(message)
+nouns <- function(tagged) {
+  tags <- .tagging(tagged$result)
   nns <- c(list(), seq_along(tags))
   tag_i <- 0
   for (t in tags) {
@@ -198,16 +223,16 @@ nouns <- function(message) {
 #'
 #' 형태소 분석 결과의 동사 배열 반환.
 #'
-#' @param message baikalNLP response message
+#' @param tagged baikalNLP tagger result
 #' @return returns array of list for verbs
 #' @examples
-#' > m <- tagger("결과를 문자열로 바꾼다.")
-#' > verbs(m)
+#' > t <- tagger("결과를 문자열로 바꾼다.")
+#' > verbs(t)
 #' [[1]]
 #' [1] "바꾸"
 #' @export
-verbs <- function(message) {
-  tags <- .tagging(message)
+verbs <- function(tagged) {
+  tags <- .tagging(tagged$result)
   vbs <- c(list(), seq_along(tags))
   tag_i <- 0
   for (t in tags) {

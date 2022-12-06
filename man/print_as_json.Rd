@@ -4,10 +4,10 @@
 \alias{print_as_json}
 \title{Print JSON string for response message}
 \usage{
-print_as_json(message)
+print_as_json(tagged)
 }
 \arguments{
-\item{message}{baikalNLP response message}
+\item{tagged}{baikalNLP tagger result}
 }
 \value{
 prints JSON string
@@ -16,6 +16,6 @@ prints JSON string
 결과를 JSON 문자열로 출력.
 }
 \examples{
-m <- tagger("결과를 문자열로 바꾼다.")
-print_as_json(m)
+t <- tagger("결과를 문자열로 바꾼다.")
+print_as_json(t)
 }

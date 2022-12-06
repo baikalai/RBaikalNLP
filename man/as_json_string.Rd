@@ -4,10 +4,10 @@
 \alias{as_json_string}
 \title{Return JSON string for response message}
 \usage{
-as_json_string(message)
+as_json_string(tagged)
 }
 \arguments{
-\item{message}{baikalNLP response message}
+\item{tagged}{baikalNLP tagger result}
 }
 \value{
 returns JSON string
@@ -16,6 +16,6 @@ returns JSON string
 결과를 JSON 문자열로 변환.
 }
 \examples{
-m <- tagger("결과를 문자열로 바꾼다.")
-json <- as_json_string(m)
+t <- tagger("결과를 문자열로 바꾼다.")
+json <- as_json_string(t)
 }
