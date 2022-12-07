@@ -276,13 +276,55 @@ dict_list <- function(tagged) {
 #' @return returns dict
 #' @export
 get_dict <- function(tagged, name) {
-  t <- tagged
-  cli <- .get_client(t$host, t$dict_proto)
+  cli <- .get_client(tagged$host, tagged$dict_proto)
   ops <- cli$GetCustomDictionary$build(domain_name = name)
   dict <- cli$GetCustomDictionary$call(ops)
+  t <- tagged
   t$custom_dict <- dict
   eval.parent(substitute(tagged <- t))
   dict
+}
+
+.get_dict_set <- function(t, set_name) {
+  d <- t$custom_dict
+  switch(set_name, 
+    np = as.list(as.list(d)$dict)$np_set,
+    cp = as.list(as.list(d)$dict)$cp_set,
+    caret = as.list(as.list(d)$dict)$cp_caret_set,
+    NULL)
+}
+
+#' Get Contents of Set
+#'
+#' 사용자 사전 세트별 내용 보기.
+#'
+#' @param tagged baikalNLP tagger result
+#' @param set_name name of set (np, cp, caret)
+#' @return returns list of words
+#' @export
+get_set <- function(tagged, set_name) {
+  ds <- .get_dict_set(tagged, set_name)
+  out <- c()
+  for (i in ds$items) {
+    out <- c(out, i$key)
+  }
+  out
+}
+
+#' Print All Contents of Custom Dictionary
+#'
+#' 사용자 사전 내용 모두 보기.
+#'
+#' @param tagged baikalNLP tagger result
+#' @return prints all contents of all sets
+#' @export
+print_dict_all <- function(tagged) {
+  print("-> 고유명사 사전")
+  print(get_set(tagged, "np"))
+  print("-> 복합명사 사전")
+  print(get_set(tagged, "cp"))
+  print("-> 분리 사전")
+  print(get_set(tagged, "caret"))
 }
 
 #' Build A Dictionary
@@ -318,7 +360,7 @@ build_dict_set <- function(tagged, domain, name, dict_set) {
 #' @param nps set of np-set dictinary
 #' @param cps set of cp-set dictinary
 #' @param carets set of cp-caret-set dictinary
-#' @return returns DictSet
+#' @return print result
 #' @export
 make_custom_dict <- function(tagged, domain, nps, cps, carets) {
   dict <- new(P("baikal.language.CustomDictionary",
@@ -335,9 +377,19 @@ make_custom_dict <- function(tagged, domain, nps, cps, carets) {
   }
 }
 
-test <- function() {
-  t <- tagger(server = "10.3.8.80", local = TRUE)
-  s <- c("하나", "두울")
-  build_dict_set(t, "domain", "name", s)
-  t
+#' Remove Custom Dictionary
+#'
+#' 사용자 사전 삭제.
+#'
+#' @param tagged baikalNLP tagger result
+#' @param name name of custom dictionary
+#' @return print results
+#' @export
+remove_custom_dict <- function(tagged, names) {
+  cli <- .get_client(tagged$host, tagged$dict_proto)
+  ops <- cli$RemoveCustomDictionaries$build(domain_names = names)
+  res <- cli$RemoveCustomDictionaries$call(ops)
+  for (r in as.list(res)$deleted_domain_names) {
+    print(c(r$key, r$value))
+  }
 }
