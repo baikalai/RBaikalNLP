@@ -15,7 +15,3 @@ prints JSON string
 \description{
 결과를 JSON 문자열로 출력.
 }
-\examples{
-t <- tagger("결과를 문자열로 바꾼다.")
-print_as_json(t)
-}

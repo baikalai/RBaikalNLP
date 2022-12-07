@@ -4,7 +4,7 @@
 \alias{nouns}
 \title{Return array of Nouns}
 \usage{
-nouns(tagged)
+nouns(tagged = NULL, text = "")
 }
 \arguments{
 \item{tagged}{baikalNLP tagger result}
@@ -16,8 +16,7 @@ returns array of list for nouns
 형태소 분석 결과의 명사 배열 반환.
 }
 \examples{
-> t <- tagger("결과를 문자열로 바꾼다.")
-> nouns(t)
+> nouns(, "결과를 문자열로 바꾼다.")
 [[1]]
 [1] "결과"   "문자열"
 }

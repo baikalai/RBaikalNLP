@@ -18,7 +18,7 @@ make_custom_dict(tagged, domain, nps, cps, carets)
 \item{carets}{set of cp-caret-set dictinary}
 }
 \value{
-returns DictSet
+print result
 }
 \description{
 사용자 사전 업데이트.

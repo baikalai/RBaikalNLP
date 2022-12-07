@@ -74,9 +74,6 @@ tagger <- function(
 #'
 #' @param tagged baikalNLP tagger result
 #' @return returns JSON string
-#' @examples
-#' t <- tagger("결과를 문자열로 바꾼다.")
-#' json <- as_json_string(t)
 #' @export
 as_json_string <- function(tagged) {
   toJSON(tagged$result)
@@ -88,9 +85,6 @@ as_json_string <- function(tagged) {
 #'
 #' @param tagged baikalNLP tagger result
 #' @return prints JSON string
-#' @examples
-#' t <- tagger("결과를 문자열로 바꾼다.")
-#' print_as_json(t)
 #' @export
 print_as_json <- function(tagged) {
   cat(as_json_string(tagged$result))
