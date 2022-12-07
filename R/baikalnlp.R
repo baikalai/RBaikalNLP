@@ -126,8 +126,7 @@ print_as_json <- function(tagged) {
 #' @param matrix if TRUE, result output to matrix not list (default = FALSE)
 #' @return returns array of lists for (morpheme, tag)
 #' @examples
-#' > t <- tagger("결과를 문자열로 바꾼다.")
-#' > postag(t, matrix = TRUE)
+#' > postag(, "결과를 문자열로 바꾼다.", TRUE)
 #' [[1]]
 #'      [,1]     [,2]
 #' [1,] "결과"   "NNG"
@@ -138,8 +137,25 @@ print_as_json <- function(tagged) {
 #' [6,] "ㄴ다"   "EF"
 #' [7,] "."      "SF"
 #' @export
-postag <- function(tagged, matrix = FALSE) {
-  tags <- .tagging(tagged$result)
+postag <- function(tagged = NULL, text = "", matrix = FALSE) {
+  # tagged가 주어지지 않으면 tagger로 생성
+  if (is.null(tagged)) {
+    t <- tagger(text)
+    res <- t$result
+  } else {
+    t <- tagged
+    # 문자열이 주어지지 않으면 이전 결과를 파싱
+    if (text == "") {
+      res <- tagged$result
+    } else {
+      # 새로운 문자열이면 실행 결과를 저장
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      t <- tagged
+      t$result <- res
+      eval.parent(substitute(tagged <- t))
+    }
+  }
+  tags <- .tagging(res)
   pos_list <- c(list(), seq_along(tags))
   pos_mat <- pos_list
   tag_i <- 0
@@ -169,13 +185,26 @@ postag <- function(tagged, matrix = FALSE) {
 #' @param tagged baikalNLP tagger result
 #' @return returns array of list for morphemes
 #' @examples
-#' > t <- tagger("결과를 문자열로 바꾼다.")
-#' > morphs(t)
+#' > morphs(, "결과를 문자열로 바꾼다.")
 #' [[1]]
 #' [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 #' @export
-morphs <- function(tagged) {
-  tags <- .tagging(tagged$result)
+morphs <- function(tagged = NULL, text = "") {
+  if (is.null(tagged)) {
+    t <- tagger(text)
+    res <- t$result
+  } else {
+    t <- tagged
+    if (text == "") {
+      res <- tagged$result
+    } else {
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      t <- tagged
+      t$result <- res
+      eval.parent(substitute(tagged <- t))
+    }
+  }
+  tags <- .tagging(res)
   morp <- c(list(), seq_along(tags))
   tag_i <- 0
   for (t in tags) {
@@ -206,13 +235,26 @@ morphs <- function(tagged) {
 #' @param tagged baikalNLP tagger result
 #' @return returns array of list for nouns
 #' @examples
-#' > t <- tagger("결과를 문자열로 바꾼다.")
-#' > nouns(t)
+#' > nouns(, "결과를 문자열로 바꾼다.")
 #' [[1]]
 #' [1] "결과"   "문자열"
 #' @export
-nouns <- function(tagged) {
-  tags <- .tagging(tagged$result)
+nouns <- function(tagged = NULL, text = "") {
+  if (is.null(tagged)) {
+    t <- tagger(text)
+    res <- t$result
+  } else {
+    t <- tagged
+    if (text == "") {
+      res <- tagged$result
+    } else {
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      t <- tagged
+      t$result <- res
+      eval.parent(substitute(tagged <- t))
+    }
+  }
+  tags <- .tagging(res)
   nns <- c(list(), seq_along(tags))
   tag_i <- 0
   for (t in tags) {
@@ -229,13 +271,26 @@ nouns <- function(tagged) {
 #' @param tagged baikalNLP tagger result
 #' @return returns array of list for verbs
 #' @examples
-#' > t <- tagger("결과를 문자열로 바꾼다.")
-#' > verbs(t)
+#' > verbs(, "결과를 문자열로 바꾼다.")
 #' [[1]]
 #' [1] "바꾸"
 #' @export
-verbs <- function(tagged) {
-  tags <- .tagging(tagged$result)
+verbs <- function(tagged = NULL, text = "") {
+  if (is.null(tagged)) {
+    t <- tagger(text)
+    res <- t$result
+  } else {
+    t <- tagged
+    if (text == "") {
+      res <- tagged$result
+    } else {
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      t <- tagged
+      t$result <- res
+      eval.parent(substitute(tagged <- t))
+    }
+  }
+  tags <- .tagging(res)
   vbs <- c(list(), seq_along(tags))
   tag_i <- 0
   for (t in tags) {
@@ -244,6 +299,8 @@ verbs <- function(tagged) {
   }
   vbs
 }
+
+# For Custom dicts
 
 .get_dic_list <- function(host, proto) {
     cli <- .get_client(host, proto)
