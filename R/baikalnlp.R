@@ -338,7 +338,7 @@ get_dict <- function(tagged, name) {
 
 .get_dict_set <- function(t, set_name) {
   d <- t$custom_dict
-  switch(set_name, 
+  switch(set_name,
     np = as.list(as.list(d)$dict)$np_set,
     cp = as.list(as.list(d)$dict)$cp_set,
     caret = as.list(as.list(d)$dict)$cp_caret_set,

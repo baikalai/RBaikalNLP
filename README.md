@@ -107,12 +107,14 @@ $tag
 > dict_list(t)
 NULL
 ```
-- 만들기: 3세트를 한꺼번에 입력해야 합니다.
+- 만들기: 5세트를 모두 입력해야 합니다.
 ```
 > np <- c("고유명사1", "고유명사2")
 > cp <- c("복합명사1", "복합명사2")
 > caret <- c("분리^사전1", "분리^사전2")
-> make_custom_dict(t, "사용자", np, cp, caret)
+> vv <- c("동사1", "동사2")
+> va <- c("형용사1", "형용사2")
+> make_custom_dict(t, "사용자", np, cp, caret, vv, va)
 [1] "사용자 : 업데이트 성공"
 ```
 - 확인: 새 사전이 생겼습니다.
@@ -128,13 +130,15 @@ message of type 'baikal.language.GetCustomDictionaryResponse' with 2 fields set
 [1] "복합명사1" "복합명사2"
 [1] "-> 분리 사전"
 [1] "분리^사전1" "분리^사전2"
+[1] "-> 동사 사전"
+[1] "동사1" "동사2"
+[1] "-> 형용사 사전"
+[1] "형용사1" "형용사2"
 ```
 - 삭제: 지웁니다.
 ```
 > remove_custom_dict(t, "사용자")
 [1] "사용자" "TRUE"
-> remove_custom_dict(t, "사용자")
-[1] "사용자" "FALSE"
 > dict_list(t)
 NULL
 ```

@@ -1,0 +1,12 @@
+library(RProtoBuf)
+library(baikalnlp)
+
+t <- tagger(, "localhost")
+np <- c("고유명사1", "고유명사2")
+cp <- c("복합명사1", "복합명사2")
+caret <- c("분리^사전1", "분리^사전2")
+vv <- c("동사1", "동사2")
+va <- c("형용사1", "형용사2")
+make_custom_dict(t, "테스트", np, cp, caret, vv, va)
+get_dict(t, "테스트")
+print_dict_all(t)
