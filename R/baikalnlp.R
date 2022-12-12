@@ -114,6 +114,28 @@ print_as_json <- function(tagged) {
   tags
 }
 
+.analyze_tag <- function(tagged = NULL, text = "") {
+  # tagged가 주어지지 않으면 tagger로 생성
+  if (is.null(tagged)) {
+    t <- tagger(text)
+    res <- t$result
+  } else {
+    t <- tagged
+    # 문자열이 주어지지 않으면 이전 결과를 파싱
+    if (text == "") {
+      res <- tagged$result
+    } else {
+      # 새로운 문자열이면 실행 결과를 저장
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
+      t <- tagged
+      t$text <- text
+      t$result <- res
+      eval.parent(substitute(tagged <- t))
+    }
+  }
+  res
+}
+
 #' Return array of (morpheme, postag) pairs
 #'
 #' 결과에서 (음절, 형태소 태그)의 배열을 반환.
@@ -134,22 +156,9 @@ print_as_json <- function(tagged) {
 #' [7,] "."      "SF"
 #' @export
 postag <- function(tagged = NULL, text = "", matrix = FALSE) {
-  # tagged가 주어지지 않으면 tagger로 생성
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    # 문자열이 주어지지 않으면 이전 결과를 파싱
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      # 새로운 문자열이면 실행 결과를 저장
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  res <- .analyze_tag(tagged, text)
+  if (!is.null(tagged)) {
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   pos_list <- c(list(), seq_along(tags))

@@ -1,3 +1,5 @@
+library(curl)
+library(grpc)
 library(RProtoBuf)
 library(baikalnlp)
 
