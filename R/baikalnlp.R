@@ -16,13 +16,13 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
     grpc_client(read_services(proto), host)
 }
 
-.analyze_text <- function(text, host, proto) {
+.analyze_text <- function(text, host, proto, domain) {
   client <- .get_client(host, proto)
   doc <- new(P("baikal.language.Document", file = proto))
   doc$content <- text
   doc$language <- "ko_KR"
-  example <- client$AnalyzeSyntax$build(
-    document = doc, encoding_type = 1, auto_split_sentence = 0)
+  example <- client$AnalyzeSyntax$build(document = doc,
+    encoding_type = 1, auto_split_sentence = 0, custom_domain = domain)
   client$AnalyzeSyntax$call(example)
 }
 
@@ -41,8 +41,8 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @importFrom RProtoBuf P
 #' @importFrom curl nslookup
 #' @export
-tagger <- function(
-    text = "", server = "nlp.baikal.ai", port = 5656, local = FALSE) {
+tagger <- function(text = "", 
+  server = "nlp.baikal.ai", port = 5656, domain = "", local = FALSE) {
   host <- paste(nslookup(server), ":", as.character(port), sep = "")
   if (local) {
     lang_proto <- "protos/language_service.proto"
@@ -53,13 +53,15 @@ tagger <- function(
     dict_proto <- system.file("protos/custom_dict.proto",
       package = "baikalnlp")
   }
+  domain <- domain
   response <- NULL
   dict <- NULL
   if (text != "") {
-    response <- .analyze_text(text, host, lang_proto)
+    response <- .analyze_text(text, host, lang_proto, domain)
   }
   tagged <- list(text = text,
     result = response,
+    domain = domain,
     custom_dict = dict,
     host = host,
     lang_proto = lang_proto,
