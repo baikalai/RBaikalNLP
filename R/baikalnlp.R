@@ -156,8 +156,10 @@ print_as_json <- function(tagged) {
 #' [7,] "."      "SF"
 #' @export
 postag <- function(tagged = NULL, text = "", matrix = FALSE) {
-  res <- .analyze_tag(tagged, text)
-  if (!is.null(tagged)) {
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
     eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
@@ -195,19 +197,11 @@ postag <- function(tagged = NULL, text = "", matrix = FALSE) {
 #' [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 #' @export
 morphs <- function(tagged = NULL, text = "") {
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   morp <- c(list(), seq_along(tags))
@@ -245,19 +239,11 @@ morphs <- function(tagged = NULL, text = "") {
 #' [1] "결과"   "문자열"
 #' @export
 nouns <- function(tagged = NULL, text = "") {
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   nns <- c(list(), seq_along(tags))
@@ -281,19 +267,11 @@ nouns <- function(tagged = NULL, text = "") {
 #' [1] "바꾸"
 #' @export
 verbs <- function(tagged = NULL, text = "") {
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   vbs <- c(list(), seq_along(tags))
