@@ -69,6 +69,10 @@ message CustomDictionaryMeta {
   DictMeta cp_set = 3;
   // 복합명사 분리용 사전
   DictMeta cp_caret_set = 4;
+  // 동사 사전
+  DictMeta vv_set = 5;
+  // 형용사 사전
+  DictMeta va_set = 6;
 }
 
 // 커스텀 사전의 데이터 전송 규격
@@ -80,6 +84,10 @@ message CustomDictionary {
   DictSet cp_set = 3;
   // 복합명사 분리용 사전
   DictSet cp_caret_set = 4;
+  // 동사 사전
+  DictSet vv_set = 5;
+  // 형용사 사전
+  DictSet va_set = 6;
 }
 
 //
@@ -122,12 +130,14 @@ message RemoveCustomDictionariesResponse {
   map<string, bool> deleted_domain_names = 1;
 }
 
+//  dict_common.proto
+
 // 사전의 종류
 enum DictType {
   // 기본 배포사전에 사용되는 포맷
   // 전송시에는 쓰이지 않는다.
   TOKEN_INDEX = 0;
-  // 고유명사나 복합명사를 표기할 때 사용한다.
+  // 고유명사나 복합명사를 표기할 때 사용한다._
   WORD_LIST = 1;
   // # 전송시에만 사용하고 실제로는 쓰이지 추론시에는 쓰이지 않는다.
   WORD_LIST_COMPOUND = 2;

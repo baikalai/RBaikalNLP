@@ -376,6 +376,10 @@ print_dict_all <- function(tagged) {
   print(get_set(tagged, "cp"))
   print("-> 분리 사전")
   print(get_set(tagged, "caret"))
+  print("-> 동사 사전")
+  print(get_set(tagged, "vv"))
+  print("-> 형용사 사전")
+  print(get_set(tagged, "va"))
 }
 
 #' Build A Dictionary
@@ -411,15 +415,19 @@ build_dict_set <- function(tagged, domain, name, dict_set) {
 #' @param nps set of np-set dictinary
 #' @param cps set of cp-set dictinary
 #' @param carets set of cp-caret-set dictinary
+#' @param vvs set of vv-set dictinary
+#' @param vas set of va-set dictinary
 #' @return print result
 #' @export
-make_custom_dict <- function(tagged, domain, nps, cps, carets) {
+make_custom_dict <- function(tagged, domain, nps, cps, carets, vvs, vas) {
   dict <- new(P("baikal.language.CustomDictionary",
     file = tagged$dict_proto))
   dict$domain_name <- domain
   dict$np_set <- build_dict_set(tagged, domain, "np-set", nps)
   dict$cp_set <- build_dict_set(tagged, domain, "cp-set", cps)
   dict$cp_caret_set <- build_dict_set(tagged, domain, "cp-caret-set", carets)
+  dict$vv_set <- build_dict_set(tagged, domain, "vv-set", vvs)
+  dict$va_set <- build_dict_set(tagged, domain, "va-set", vas)
   cli <- .get_client(tagged$host, tagged$dict_proto)
   ops <- cli$UpdateCustomDictionary$build(domain_name = domain, dict = dict)
   res <- cli$UpdateCustomDictionary$call(ops)

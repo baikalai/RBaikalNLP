@@ -4,7 +4,7 @@
 \alias{make_custom_dict}
 \title{Update Custom Dictionary}
 \usage{
-make_custom_dict(tagged, domain, nps, cps, carets)
+make_custom_dict(tagged, domain, nps, cps, carets, vvs, vas)
 }
 \arguments{
 \item{tagged}{baikalNLP tagger result}
@@ -16,6 +16,10 @@ make_custom_dict(tagged, domain, nps, cps, carets)
 \item{cps}{set of cp-set dictinary}
 
 \item{carets}{set of cp-caret-set dictinary}
+
+\item{vvs}{set of vv-set dictinary}
+
+\item{vas}{set of va-set dictinary}
 }
 \value{
 print result
