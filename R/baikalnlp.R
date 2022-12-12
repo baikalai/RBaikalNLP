@@ -342,6 +342,8 @@ get_dict <- function(tagged, name) {
     np = as.list(as.list(d)$dict)$np_set,
     cp = as.list(as.list(d)$dict)$cp_set,
     caret = as.list(as.list(d)$dict)$cp_caret_set,
+    vv = as.list(as.list(d)$dict)$vv_set,
+    va = as.list(as.list(d)$dict)$va_set,
     NULL)
 }
 
