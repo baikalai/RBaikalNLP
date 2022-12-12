@@ -16,13 +16,13 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
     grpc_client(read_services(proto), host)
 }
 
-.analyze_text <- function(text, host, proto) {
+.analyze_text <- function(text, host, proto, domain) {
   client <- .get_client(host, proto)
   doc <- new(P("baikal.language.Document", file = proto))
   doc$content <- text
   doc$language <- "ko_KR"
-  example <- client$AnalyzeSyntax$build(
-    document = doc, encoding_type = 1, auto_split_sentence = 0)
+  example <- client$AnalyzeSyntax$build(document = doc,
+    encoding_type = 1, auto_split_sentence = 0, custom_domain = domain)
   client$AnalyzeSyntax$call(example)
 }
 
@@ -33,6 +33,7 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @param text string - subject sentences splitted by newlines(\\n)
 #' @param server string - baikalNLP grpc server address
 #' @param port number - baikalNLP grpc server port
+#' @param domain string - custom domain (custom dictionary)
 #' @param local bool - use local protobuf files, if TRUE
 #' @return returns tagged object
 #' @examples
@@ -41,8 +42,8 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @importFrom RProtoBuf P
 #' @importFrom curl nslookup
 #' @export
-tagger <- function(
-    text = "", server = "nlp.baikal.ai", port = 5656, local = FALSE) {
+tagger <- function(text = "",
+  server = "nlp.baikal.ai", port = 5656, domain = "", local = FALSE) {
   host <- paste(nslookup(server), ":", as.character(port), sep = "")
   if (local) {
     lang_proto <- "protos/language_service.proto"
@@ -53,13 +54,15 @@ tagger <- function(
     dict_proto <- system.file("protos/custom_dict.proto",
       package = "baikalnlp")
   }
+  domain <- domain
   response <- NULL
   dict <- NULL
   if (text != "") {
-    response <- .analyze_text(text, host, lang_proto)
+    response <- .analyze_text(text, host, lang_proto, domain)
   }
   tagged <- list(text = text,
     result = response,
+    domain = domain,
     custom_dict = dict,
     host = host,
     lang_proto = lang_proto,
@@ -112,6 +115,28 @@ print_as_json <- function(tagged) {
   tags
 }
 
+.analyze_tag <- function(tagged = NULL, text = "") {
+  # tagged가 주어지지 않으면 tagger로 생성
+  if (is.null(tagged)) {
+    t <- tagger(text)
+    res <- t$result
+  } else {
+    t <- tagged
+    # 문자열이 주어지지 않으면 이전 결과를 파싱
+    if (text == "") {
+      res <- tagged$result
+    } else {
+      # 새로운 문자열이면 실행 결과를 저장
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
+      t <- tagged
+      t$text <- text
+      t$result <- res
+      eval.parent(substitute(tagged <- t))
+    }
+  }
+  res
+}
+
 #' Return array of (morpheme, postag) pairs
 #'
 #' 결과에서 (음절, 형태소 태그)의 배열을 반환.
@@ -132,22 +157,11 @@ print_as_json <- function(tagged) {
 #' [7,] "."      "SF"
 #' @export
 postag <- function(tagged = NULL, text = "", matrix = FALSE) {
-  # tagged가 주어지지 않으면 tagger로 생성
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    # 문자열이 주어지지 않으면 이전 결과를 파싱
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      # 새로운 문자열이면 실행 결과를 저장
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   pos_list <- c(list(), seq_along(tags))
@@ -184,19 +198,11 @@ postag <- function(tagged = NULL, text = "", matrix = FALSE) {
 #' [1] "결과"   "를"     "문자열" "로"     "바꾸"   "ㄴ다"   "."
 #' @export
 morphs <- function(tagged = NULL, text = "") {
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   morp <- c(list(), seq_along(tags))
@@ -234,19 +240,11 @@ morphs <- function(tagged = NULL, text = "") {
 #' [1] "결과"   "문자열"
 #' @export
 nouns <- function(tagged = NULL, text = "") {
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   nns <- c(list(), seq_along(tags))
@@ -270,19 +268,11 @@ nouns <- function(tagged = NULL, text = "") {
 #' [1] "바꾸"
 #' @export
 verbs <- function(tagged = NULL, text = "") {
-  if (is.null(tagged)) {
-    t <- tagger(text)
-    res <- t$result
-  } else {
-    t <- tagged
-    if (text == "") {
-      res <- tagged$result
-    } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
-      t <- tagged
-      t$result <- res
-      eval.parent(substitute(tagged <- t))
-    }
+  dup <- tagged
+  res <- .analyze_tag(dup, text)
+  if (!is.null(dup) && text != "") {
+    t <- dup
+    eval.parent(substitute(tagged <- t))
   }
   tags <- .tagging(res)
   vbs <- c(list(), seq_along(tags))
@@ -332,6 +322,7 @@ get_dict <- function(tagged, name) {
   dict <- cli$GetCustomDictionary$call(ops)
   t <- tagged
   t$custom_dict <- dict
+  t$domain <- name
   eval.parent(substitute(tagged <- t))
   dict
 }
