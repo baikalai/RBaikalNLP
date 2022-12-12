@@ -54,15 +54,15 @@ tagger <- function(text = "",
     dict_proto <- system.file("protos/custom_dict.proto",
       package = "baikalnlp")
   }
-  domain <- domain
+  custom_domain <- domain
   response <- NULL
   dict <- NULL
   if (text != "") {
-    response <- .analyze_text(text, host, lang_proto, domain)
+    response <- .analyze_text(text, host, lang_proto, custom_domain)
   }
   tagged <- list(text = text,
     result = response,
-    domain = domain,
+    domain = custom_domain,
     custom_dict = dict,
     host = host,
     lang_proto = lang_proto,

@@ -21,6 +21,7 @@ print_dict <- function(server = test, domain = example) {
     t <- tagger(, server = server)
     get_dict(t, domain)
     print_dict_all(t)
+    t
 }
 
 t <- tagger(, server = test, domain = example)

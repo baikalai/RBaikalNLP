@@ -1,6 +1,6 @@
 Package: baikalnlp
 Title: R interface for BaikalNLP
-Version: 0.8.4
+Version: 0.8.5
 Authors@R: 
     person("hunbL", "", , "hunbl@baikal.ai", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0951-2785"))
