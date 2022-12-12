@@ -4,7 +4,13 @@
 \alias{tagger}
 \title{Call baikalNLP server to read postag result message for the sentences}
 \usage{
-tagger(text = "", server = "nlp.baikal.ai", port = 5656, local = FALSE)
+tagger(
+  text = "",
+  server = "nlp.baikal.ai",
+  port = 5656,
+  domain = "",
+  local = FALSE
+)
 }
 \arguments{
 \item{text}{string - subject sentences splitted by newlines(\\n)}
@@ -12,6 +18,8 @@ tagger(text = "", server = "nlp.baikal.ai", port = 5656, local = FALSE)
 \item{server}{string - baikalNLP grpc server address}
 
 \item{port}{number - baikalNLP grpc server port}
+
+\item{domain}{string - custom domain (custom dictionary)}
 
 \item{local}{bool - use local protobuf files, if TRUE}
 }

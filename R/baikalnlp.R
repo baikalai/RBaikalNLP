@@ -33,6 +33,7 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @param text string - subject sentences splitted by newlines(\\n)
 #' @param server string - baikalNLP grpc server address
 #' @param port number - baikalNLP grpc server port
+#' @param domain string - custom domain (custom dictionary)
 #' @param local bool - use local protobuf files, if TRUE
 #' @return returns tagged object
 #' @examples
@@ -41,7 +42,7 @@ tag_labels <- c("EC", "EF", "EP", "ETM", "ETN", "IC",
 #' @importFrom RProtoBuf P
 #' @importFrom curl nslookup
 #' @export
-tagger <- function(text = "", 
+tagger <- function(text = "",
   server = "nlp.baikal.ai", port = 5656, domain = "", local = FALSE) {
   host <- paste(nslookup(server), ":", as.character(port), sep = "")
   if (local) {
