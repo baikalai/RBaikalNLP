@@ -145,7 +145,7 @@ postag <- function(tagged = NULL, text = "", matrix = FALSE) {
       res <- tagged$result
     } else {
       # 새로운 문자열이면 실행 결과를 저장
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
       t <- tagged
       t$result <- res
       eval.parent(substitute(tagged <- t))
@@ -194,7 +194,7 @@ morphs <- function(tagged = NULL, text = "") {
     if (text == "") {
       res <- tagged$result
     } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
       t <- tagged
       t$result <- res
       eval.parent(substitute(tagged <- t))
@@ -244,7 +244,7 @@ nouns <- function(tagged = NULL, text = "") {
     if (text == "") {
       res <- tagged$result
     } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
       t <- tagged
       t$result <- res
       eval.parent(substitute(tagged <- t))
@@ -280,7 +280,7 @@ verbs <- function(tagged = NULL, text = "") {
     if (text == "") {
       res <- tagged$result
     } else {
-      res <- .analyze_text(text, tagged$host, tagged$lang_proto)
+      res <- .analyze_text(text, tagged$host, tagged$lang_proto, tagged$domain)
       t <- tagged
       t$result <- res
       eval.parent(substitute(tagged <- t))
@@ -334,6 +334,7 @@ get_dict <- function(tagged, name) {
   dict <- cli$GetCustomDictionary$call(ops)
   t <- tagged
   t$custom_dict <- dict
+  t$domain <- name
   eval.parent(substitute(tagged <- t))
   dict
 }
