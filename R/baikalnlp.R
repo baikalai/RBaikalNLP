@@ -90,7 +90,7 @@ as_json_string <- function(tagged) {
 #' @return prints JSON string
 #' @export
 print_as_json <- function(tagged) {
-  cat(as_json_string(tagged$result))
+  cat(as_json_string(tagged))
 }
 
 .tagging <- function(m) {
