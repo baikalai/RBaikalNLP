@@ -79,7 +79,11 @@ tagger <- function(text = "",
 #' @return returns JSON string
 #' @export
 as_json_string <- function(tagged) {
-  toJSON(tagged$result)
+  if (is.null(tagged$result)) {
+    "No result"
+  } else {
+    toJSON(tagged$result)
+  }
 }
 
 #' Print JSON string for response message
@@ -90,7 +94,11 @@ as_json_string <- function(tagged) {
 #' @return prints JSON string
 #' @export
 print_as_json <- function(tagged) {
-  cat(as_json_string(tagged))
+  if (is.null(tagged$result)) {
+    "No result"
+  } else {
+    cat(as_json_string(tagged))
+  }
 }
 
 .tagging <- function(m) {
